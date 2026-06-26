@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Face Registration</title>
+
+    <style>
+
+        body{
+            font-family:Arial;
+            text-align:center;
+            margin-top:40px;
+        }
+
+        video{
+
+            width:500px;
+            border:2px solid black;
+
+        }
+
+        canvas{
+
+            display:none;
+
+        }
+
+        img{
+
+            width:500px;
+            margin-top:20px;
+
+        }
+
+        pre{
+
+            text-align:left;
+            width:700px;
+            margin:auto;
+            background:#f3f3f3;
+            padding:20px;
+            overflow:auto;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<h2>Face Registration</h2>
+
+<video id="video" autoplay playsinline></video>
+
+<br><br>
+
+<button onclick="capture()">Capture Face</button>
+
+<br><br>
+
+<img id="preview"/>
+
+<canvas id="canvas"></canvas>
+
+<pre id="result"></pre>
+
+<script>
+
+const video=document.getElementById("video");
+
+navigator.mediaDevices.getUserMedia({
+
+    video:true
+
+}).then(stream=>{
+
+    video.srcObject=stream;
+
+});
+
+async function capture(){
+
+    const canvas=document.getElementById("canvas");
+
+    const ctx=canvas.getContext("2d");
+
+    canvas.width=video.videoWidth;
+
+    canvas.height=video.videoHeight;
+
+    ctx.drawImage(video,0,0);
+
+    document.getElementById("preview").src=canvas.toDataURL("image/jpeg");
+
+    canvas.toBlob(async(blob)=>{
+
+        let formData=new FormData();
+
+        formData.append("file",blob,"face.jpg");
+
+        let res=await fetch("/register-face",{
+
+            method:"POST",
+
+            body:formData
+
+        });
+
+        let data=await res.json();
+
+        document.getElementById("result").innerText=
+            JSON.stringify(data,null,4);
+
+    },"image/jpeg",0.95);
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+# Virtual Environment
+venv/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Environment
+.env
+
+# Uploads
+uploads/
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
